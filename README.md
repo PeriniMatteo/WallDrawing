@@ -1,2 +1,2 @@
-# DrawingMachine
-Repository of the project Drawing Machine
+# WallDrawing
+Repository of the project Wall Drawing
