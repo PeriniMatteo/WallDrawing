@@ -30,6 +30,7 @@ class GCodeContext:
         "$100=85\r\n",
         "$101=85\r\n",
         "G92 X0.0 Y%0.2f\r\n" % self.distance,
+        "M03 (pen up)\r\n",
         "G00 X300.0 Y300.0\r\n",
         #"G90 (absolute mode)",
         #"G92 X%.2f Y%.2f Z%.2f (you are here)" % (self.x_home, self.y_home, self.z_height),
@@ -121,11 +122,13 @@ class GCodeContext:
     def start(self):
       #self.codes.append("M300 S%0.2F (pen down)" % self.pen_down_angle)
       #self.codes.append("G4 P%d (wait %dms)" % (self.start_delay, self.start_delay))
+      self.codes.append("M04 (pen down)" )
       self.drawing = True
 
     def stop(self):
       #self.codes.append("M300 S%0.2F (pen up)" % self.pen_up_angle)
       #self.codes.append("G4 P%d (wait %dms)" % (self.stop_delay, self.stop_delay))
+      self.codes.append("M03 (pen up)" )
       self.drawing = False
 
     def go_to_point(self, x, y, stop=False):
@@ -137,6 +140,7 @@ class GCodeContext:
         if self.drawing: 
             #self.codes.append("M300 S%0.2F (pen up)" % self.pen_up_angle) 
             #self.codes.append("G4 P%d (wait %dms)" % (self.stop_delay, self.stop_delay))
+            self.codes.append("M03 (pen up)")
             self.drawing = False
         #self.codes.append("G1 X%.2f Y%.2f F%.2f" % (x,y, self.xy_feedrate))
         self.codes.append("G1 X%.2f Y%.2f F%.2f\r\n" % ((x**2+y**2)**0.5,((self.distance-x)**2+y**2)**0.5, self.xy_feedrate))
@@ -149,6 +153,7 @@ class GCodeContext:
         return
       else:
         if self.drawing == False:
+            self.codes.append("M04  (pen down)" )
             #self.codes.append("M300 S%0.2F (pen down)" % self.pen_up_angle)
             #self.codes.append("G4 P%d (wait %dms)" % (self.start_delay, self.start_delay))
             self.drawing = True
